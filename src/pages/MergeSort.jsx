@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ArrayContainer from "../components/ArrayContainer.jsx";
 import mergeSort from "../logic/mergeSort.js";
 import { useOutletContext } from "react-router-dom";
@@ -8,10 +8,11 @@ function MergeSort() {
   const { showSettings, setShowSettings } = useOutletContext();
 
   const [array, setArray] = useState([3, 6, 9, 4, 1, 2, 5, 7, 8, 0]);
-  const [resetArray, setResetArray] = useState([]); 
+  const [resetArray, setResetArray] = useState([]);
   const [sortedArray, setSortedArray] = useState([]);
+  const [speed, setSpeed] = useState(1);
 
-  
+
   const [runSort, setRunSort] = useState(false);
   const [sorted, setSorted] = useState(false);
   const [showAnimationText, setShowAnimationText] = useState(false);
@@ -22,18 +23,18 @@ function MergeSort() {
       const run = async () => {
         animationRef.current.innerHTML = "";
         setResetArray([...array]);
-        const test = await mergeSort(array, 0, array.length - 1, animationRef.current);
+        const test = await mergeSort(array, 0, array.length - 1, animationRef.current, 0, 'center', null, speed);
         const returnedArray = Array.from(test.querySelectorAll('.array-box p')).map(el => parseInt(el.textContent));
         setSortedArray(returnedArray);
 
         setRunSort(false);
-        setSorted(true); 
+        setSorted(true);
       };
 
       if ((resetArray.length === 0 && sortedArray.length === 0) || !equalArrays(resetArray, sortedArray)) {
         run();
       }
-      
+
     }
   }, [runSort])
 
@@ -47,16 +48,16 @@ function MergeSort() {
     return true;
   }
 
-  return( 
+  return (
     <div className="context">
-      <Settings className={showSettings ? "active" : ""} closeSettings = {() => setShowSettings(false)} onArrayChange={(arr) => setArray(arr)}></Settings>
+      <Settings className={showSettings ? "active" : ""} closeSettings={() => setShowSettings(false)} onArrayChange={(arr) => setArray(arr)} speed={speed} onSpeedChange={(newSpeed) => setSpeed(newSpeed)}></Settings>
       <div className="animation-section" ref={animationRef}>
         {!sorted && !runSort && <ArrayContainer array={array} />}
       </div>
 
       <div className="command-buttons">
-        <p className="animation-in-progress-text" 
-          style={{opacity: showAnimationText ? 1 : 0, transition: 'opacity 0.3s'}}>Animation in Progress Please Wait.</p>
+        <p className="animation-in-progress-text"
+          style={{ opacity: showAnimationText ? 1 : 0, transition: 'opacity 0.3s' }}>Animation in Progress Please Wait.</p>
         <div className="buttons">
           <button className="start-button" onClick={() => setRunSort(true)}>Start</button>
           <button className="reset-button" onClick={() => {
